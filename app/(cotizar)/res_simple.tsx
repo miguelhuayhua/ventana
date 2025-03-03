@@ -13,6 +13,10 @@ import { Button } from '~/components/ui/button';
 import { File, Save } from 'lucide-react-native';
 import colors from 'tailwindcss/colors';
 import FacturaModal from './factura_modal';
+import { toast } from 'sonner-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '~/store/actions/items';
+import ObjectID from 'bson-objectid';
 //CONSTANTES 
 const HOJAS = 3;
 const GROSOR_ZOCALO_20 = 5;
@@ -20,6 +24,8 @@ const GROSOR_ZOCALO_25 = 7;
 dayjs.locale('es');
 export default function Screen() {
     const data = useLocalSearchParams();
+    const items = useSelector((state: any) => state.item.items);
+    const dispatch = useDispatch();
     const imageRef = useRef<ScrollView>(null);
     const viewRef = useRef<View>(null);
     const [status, requestPermission] = MediaLibrary.usePermissions();
@@ -58,7 +64,8 @@ export default function Screen() {
         + (+data.precio_vidrio)).toFixed(0);
     let total_mano_obra = +(total * +data.porcentajeGanancia).toFixed(0);
     const [open, setOpen] = React.useState(false);
-
+    console.log(items)
+    console.log(items.find((value: any) => value.item.precio == (+total + total_mano_obra)))
     return (
         <>
             <View  >
@@ -160,7 +167,13 @@ export default function Screen() {
                                 Volver
                             </Text>
                         </Button>
-                        <Button className='grow' >
+                        <Button className='grow'
+                            disabled={!!items.find((value: any) => value.item.precio == (+total + total_mano_obra))}
+                            onPress={() => {
+                                dispatch(addItem({ id: ObjectID().toHexString(), nombre: `V.2 hojas ${data.ancho}x${data.alto}cm ${data.colorVidrio} ${data.tipoVidrio}, L-${data.linea} ${data.colorAluminio}`, precio: total + total_mano_obra }));
+                                toast.success('Agregado a hoja');
+                            }}
+                        >
                             <Text>
                                 Agregar a hoja
                             </Text>
@@ -170,9 +183,7 @@ export default function Screen() {
             </View>
             <FacturaModal open={open} setOpen={setOpen} data={{
                 items: [{
-                    alto: +data.alto,
-                    ancho: +data.ancho,
-                    nombre: 'Ventana simple 2 hojas',
+                    nombre: `V.2 hojas ${data.ancho}x${data.alto}cm ${data.colorVidrio} ${data.tipoVidrio}, L-${data.linea} ${data.colorAluminio}`,
                     precio: total
                 }],
                 empresa: data.empresa.toString(),

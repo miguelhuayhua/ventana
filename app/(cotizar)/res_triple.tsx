@@ -13,9 +13,10 @@ import { Button } from '~/components/ui/button';
 import { File, Save } from 'lucide-react-native';
 import colors from 'tailwindcss/colors';
 import FacturaModal from './factura_modal';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '~/store/actions/items';
 import { toast } from 'sonner-native';
+import ObjectID from 'bson-objectid';
 
 const GROSOR_ZOCALO_20 = 5;
 const GROSOR_ZOCALO_25 = 7;
@@ -24,6 +25,7 @@ export default function Screen() {
     const dispatch = useDispatch();
     const data = useLocalSearchParams();
     const imageRef = useRef<ScrollView>(null);
+    const items = useSelector((state: any) => state.item.items);
     const viewRef = useRef<View>(null);
     const [status, requestPermission] = MediaLibrary.usePermissions();
     if (status === null) {
@@ -171,8 +173,9 @@ export default function Screen() {
                             </Text>
                         </Button>
                         <Button
+                            disabled={!!items.find((value: any) => value.item.precio == (+total + total_mano_obra))}
                             onPress={() => {
-                                dispatch(addItem({ nombre: 'Ventana triple (3 hojas)', precio: total + total_mano_obra }));
+                                dispatch(addItem({ id: ObjectID().toHexString(), nombre: `V.3 hojas ${data.ancho}x${data.alto}cm ${data.colorVidrio} ${data.tipoVidrio}, L-${data.linea} ${data.colorAluminio}`, precio: total + total_mano_obra }));
                                 toast.success('Agregado a hoja');
                             }}
                             className='grow' >
@@ -185,9 +188,7 @@ export default function Screen() {
             </View>
             <FacturaModal open={open} setOpen={setOpen} data={{
                 items: [{
-                    alto: +data.alto,
-                    ancho: +data.ancho,
-                    nombre: 'Ventana triple (3 hojas)',
+                    nombre: `V.3 hojas ${data.ancho}x${data.alto}cm ${data.colorVidrio} ${data.tipoVidrio}, L-${data.linea} ${data.colorAluminio}`,
                     precio: total + total_mano_obra,
 
                 }],

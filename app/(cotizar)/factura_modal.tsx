@@ -18,9 +18,9 @@ interface Props {
     open: boolean;
     setOpen: any;
     data: {
-        items: { alto: number, ancho: number, nombre: string, precio: number }[],
+        items: { nombre: string, precio: number }[],
         empresa?: string,
-        porcentajeGanancia: number
+        porcentajeGanancia?: number
     };
 }
 
@@ -67,7 +67,6 @@ export default function FacturaModal({ open, setOpen, data }: Props) {
                     <View className='mt-1'>
                         <View style={styles.tableHeader}>
                             <Text style={[styles.tableHeaderCell, { flex: 2 }]}>Servicio</Text>
-                            <Text style={[styles.tableHeaderCell, { flex: 1 }]}>Medida</Text>
                             <Text style={[styles.tableHeaderCell, { flex: 1, textAlign: 'right' }]}>Precio</Text>
                         </View>
 
@@ -76,9 +75,6 @@ export default function FacturaModal({ open, setOpen, data }: Props) {
                                 <View key={index} style={styles.tableRow}>
                                     <Text style={[styles.tableCell, { flex: 2 }]} numberOfLines={2} ellipsizeMode="tail">
                                         {item.nombre}
-                                    </Text>
-                                    <Text style={[styles.tableCell, { flex: 1 }]}>
-                                        {`${item.ancho} x ${item.alto} cm`}
                                     </Text>
                                     <Text style={[styles.tableCell, { flex: 1, textAlign: 'right' }]}>
                                         {
@@ -97,15 +93,23 @@ export default function FacturaModal({ open, setOpen, data }: Props) {
                     </View>
                     <View style={styles.divider} />
                     <View style={styles.footer}>
-                        <Text className='text-xs text-center'>
-                            {`Material aluminio: ${data.empresa}`}
-                        </Text>
-                        <Text className='text-xs'>
-                            {`${data.porcentajeGanancia == 0.4 ?
-                                '(Solo fabricación)' :
-                                data.porcentajeGanancia == 0.8 ?
-                                    '(Fabricado y colocado)' : '(Instalación personalizada)'}`}
-                        </Text>
+                        {
+                            data.empresa && (
+                                <Text className='text-xs text-center'>
+                                    {`Material aluminio: ${data.empresa}`}
+                                </Text>
+                            )
+                        }
+                        {
+                            data.porcentajeGanancia && (
+                                <Text className='text-xs'>
+                                    {`${data.porcentajeGanancia == 0.4 ?
+                                        '(Solo fabricación)' :
+                                        data.porcentajeGanancia == 0.8 ?
+                                            '(Fabricado y colocado)' : '(Instalación personalizada)'}`}
+                                </Text>
+                            )
+                        }
                     </View>
                 </ScrollView>
                 <Button onPress={onSaveImageAsync}>
