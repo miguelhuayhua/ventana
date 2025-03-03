@@ -13,7 +13,10 @@ import { Button } from '~/components/ui/button';
 import { File, Save } from 'lucide-react-native';
 import colors from 'tailwindcss/colors';
 import FacturaModal from './factura_modal';
-
+//CONSTANTES 
+const HOJAS = 3;
+const GROSOR_ZOCALO_20 = 5;
+const GROSOR_ZOCALO_25 = 7;
 dayjs.locale('es');
 export default function Screen() {
     const data = useLocalSearchParams();
@@ -41,20 +44,32 @@ export default function Screen() {
         }
     };
 
-    let total = +((+data.precio_gancho) + (+data.precio_jamba) + (+data.precio_parante) + (+data.precio_riel_inf) + (+data.precio_riel_sup) + (+data.precio_socalo) + (+data.precio_socalo_c) + (+data.precio_vidrio));
+    let total = +((+data.precio_gancho)
+        + (+data.precio_jamba)
+        + (+data.precio_parante)
+        + (+data.precio_riel_inf)
+        + (+data.precio_riel_sup)
+        + (+data.precio_socalo)
+        + (+data.precio_socalo_c)
+        + (22 + 10)
+        + (+data.nro_rodamientos * 2.5)
+        + (+data.longitud_goma) * 1.5
+        + (+data.longitud_felpa) * 1
+        + (+data.precio_vidrio)).toFixed(0);
+    let total_mano_obra = +(total * +data.porcentajeGanancia).toFixed(0);
     const [open, setOpen] = React.useState(false);
 
     return (
         <>
-            <View style={{ flex: 1 }}  >
+            <View  >
                 <Image style={[{ width: "100%", height: "100%", }, StyleSheet.absoluteFill]}
                     source={require('../../assets/images/fondo.jpg')} />
-                <ScrollView className='p-6' ref={imageRef}  >
+                <ScrollView className='px-6' ref={imageRef}  >
                     <Button
                         onPress={() => {
                             setOpen(true);
                         }}
-                        variant='outline' className='flex flex-row gap-3 mb-6 bg-white' >
+                        variant='outline' className='flex flex-row gap-3 my-6 bg-white' >
                         <File color={colors.gray["600"]} size={18} />
                         <Text>
                             Generar factura
@@ -82,7 +97,7 @@ export default function Screen() {
                             {`Ganchos: ${data.des_gancho} cm x 2 = ${data.precio_gancho} Bs.`}
                         </Text>
                         <Text className='text-lg'>
-                            {`Sócalos: ${data.des_socalo} cm x 3 & ${+data.des_socalo + 2} cm x 1 = ${+data.precio_socalo + (+data.precio_socalo_c)} Bs.`}
+                            {`Sócalos: ${data.des_socalo} cm x ${4 - +data.nroCorredizas} & ${+data.des_socalo} cm x ${4 - +data.nroCorredizas} = ${+data.precio_socalo + (+data.precio_socalo_c)} Bs.`}
                         </Text>
                         <Text className='text-lg'>
                             {`Jamba: ${data.des_jamba} cm x 2 = ${data.precio_jamba} Bs.`}
@@ -97,37 +112,47 @@ export default function Screen() {
                             Vidrio
                         </Text>
                         <Text className='text-lg'>
-                            Área a cubrir: {data.area_vidrio} m2 = {data.precio_vidrio} Bs.
+                            2 piezas de {(+data.des_socalo + 1.2).toFixed(1)} x {((+data.des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 1.2)).toFixed(1)} cm
                         </Text>
+                        <Text className='text-lg'>
+                            Área a cubrir: {data.area_vidrio} cm2 = {data.precio_vidrio} Bs.
+                        </Text>
+
                         <Text className='text-xl font-bold'>
                             Materiales extras
                         </Text>
                         <Text className='text-lg'>
-                            Longitud de goma: {+(data.longitud_goma) / 100} m
+                            Longitud de goma: {`${data.longitud_goma} m = ${+data.longitud_goma * 1.5} Bs.`}
                         </Text>
                         <Text className='text-lg'>
-                            Longitud de felpa: {data.longitud_felpa} m
+                            Nro. de rodamientos: {data.nro_rodamientos} unidades = {+data.nro_rodamientos * 2.5} Bs.
                         </Text>
                         <Text className='text-lg'>
-                            Nro. de rodamientos: {data.nro_rodamientos} unidades
+                            Picos de loro: 1 unidades = 2.5 Bs.
                         </Text>
                         <Text className='text-lg'>
-                            Picos de loro: {data.nro_picos} unidades
+                            Cinta felpa: {`${data.longitud_felpa} m = ${+data.longitud_felpa * 1} Bs.`}
+                        </Text>
+                        <Text className='text-lg'>
+                            Tornillos: 100 unidades = 10 Bs.
+                        </Text>
+                        <Text className='text-lg'>
+                            Silicona: 1 unidad = 22 Bs
                         </Text>
                         <Text>
                             ---------------------------------------------------------------------
                         </Text>
                         <Text className='text-xl'>
-                            Total mano de obra: {total * +data.porcentajeGanancia} Bs.
+                            Total mano de obra: {total_mano_obra} Bs.
                         </Text>
                         <Text className='text-xl'>
                             Total materiales: {total} Bs.
                         </Text>
                         <Text className='text-xl font-bold'>
-                            Total: {total + total * +data.porcentajeGanancia} Bs.
+                            Total: {total + total_mano_obra} Bs.
                         </Text>
                     </ViewShot>
-                    <View className='flex flex-row gap-5'>
+                    <View className='flex flex-row gap-5 mb-4'>
                         <Button
                             onPress={() => router.dismiss()}
                             variant='outline' className='grow bg-white' >
@@ -144,13 +169,14 @@ export default function Screen() {
                 </ScrollView>
             </View>
             <FacturaModal open={open} setOpen={setOpen} data={{
-                ventanas: [{
+                items: [{
                     alto: +data.alto,
                     ancho: +data.ancho,
                     nombre: 'Ventana simple 2 hojas',
                     precio: total
                 }],
-                empresa: data.empresa.toString()
+                empresa: data.empresa.toString(),
+                porcentajeGanancia: +data.porcentajeGanancia
             }} />
         </>
 

@@ -13,9 +13,15 @@ import { Button } from '~/components/ui/button';
 import { File, Save } from 'lucide-react-native';
 import colors from 'tailwindcss/colors';
 import FacturaModal from './factura_modal';
+import { useDispatch } from 'react-redux';
+import { addItem } from '~/store/actions/items';
+import { toast } from 'sonner-native';
 
+const GROSOR_ZOCALO_20 = 5;
+const GROSOR_ZOCALO_25 = 7;
 dayjs.locale('es');
 export default function Screen() {
+    const dispatch = useDispatch();
     const data = useLocalSearchParams();
     const imageRef = useRef<ScrollView>(null);
     const viewRef = useRef<View>(null);
@@ -50,21 +56,24 @@ export default function Screen() {
         + (+data.precio_socalo_c)
         + (+data.precio_vidrio)
         + (+data.longitud_goma * 1.5)
+        + (+data.nro_rodamientos * 2.5)
+        + (10 + 22)
+        + (data.nroCorredizas == '1' ? +data.precio_union : 0)
         + (+data.longitud_felpa)).toFixed(0);
     let total_mano_obra = +(total * +data.porcentajeGanancia).toFixed(0);
     const [open, setOpen] = React.useState(false);
 
     return (
         <>
-            <View style={{ flex: 1 }}  >
+            <View    >
                 <Image style={[{ width: "100%", height: "100%", }, StyleSheet.absoluteFill]}
                     source={require('../../assets/images/fondo.jpg')} />
-                <ScrollView className='p-6' ref={imageRef}  >
+                <ScrollView className='px-6 ' ref={imageRef}  >
                     <Button
                         onPress={() => {
                             setOpen(true);
                         }}
-                        variant='outline' className='flex flex-row gap-3 mb-6 bg-white' >
+                        variant='outline' className='flex flex-row gap-3 my-6 bg-white' >
                         <File color={colors.gray["600"]} size={18} />
                         <Text>
                             Generar factura
@@ -103,11 +112,21 @@ export default function Screen() {
                         <Text className='text-lg'>
                             {`Riel inferior: ${data.des_riel_inf} cm x 1 = ${data.precio_riel_inf} Bs.`}
                         </Text>
+                        {
+                            data.nroCorredizas == '1' ?
+                                <Text className='text-lg'>
+                                    {`Unión de hoja: ${data.des_parante} cm x 1 = ${data.precio_union} Bs.`}
+                                </Text>
+                                : null
+                        }
                         <Text className='text-xl font-bold'>
                             Vidrio
                         </Text>
                         <Text className='text-lg'>
-                            Área a cubrir: {data.area_vidrio} m2 = {data.precio_vidrio} Bs.
+                            3 piezas de {(+data.des_socalo + 1.2).toFixed(1)} x {((+data.des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 1.2)).toFixed(1)} cm
+                        </Text>
+                        <Text className='text-lg'>
+                            Área a cubrir: {data.area_vidrio} cm2 = {data.precio_vidrio} Bs.
                         </Text>
                         <Text className='text-xl font-bold'>
                             Materiales extras
@@ -116,7 +135,7 @@ export default function Screen() {
                             Longitud de goma: {`${data.longitud_goma} m = ${+data.longitud_goma * 1.5} Bs.`}
                         </Text>
                         <Text className='text-lg'>
-                            Nro. de rodamientos: {data.nro_rodamientos} unidades
+                            Nro. de rodamientos: {data.nro_rodamientos} unidades = {+data.nro_rodamientos * 2.5} Bs.
                         </Text>
                         <Text className='text-lg'>
                             Picos de loro: {data.nroCorredizas} unidades
@@ -125,10 +144,10 @@ export default function Screen() {
                             Cinta felpa: {`${data.longitud_felpa} m = ${+data.longitud_felpa * 1} Bs.`}
                         </Text>
                         <Text className='text-lg'>
-                            Tornillos: {data.nroCorredizas} unidades
+                            Tornillos:100 unidades = 10 Bs.
                         </Text>
                         <Text className='text-lg'>
-                            Silicona: {data.nroCorredizas} unidades
+                            Silicona: 1 unidad = 22 Bs
                         </Text>
                         <Text>
                             ---------------------------------------------------------------------
@@ -143,7 +162,7 @@ export default function Screen() {
                             Total: {total + total_mano_obra} Bs.
                         </Text>
                     </ViewShot>
-                    <View className='flex flex-row gap-5'>
+                    <View className='flex flex-row gap-5 mb-6'>
                         <Button
                             onPress={() => router.dismiss()}
                             variant='outline' className='grow bg-white' >
@@ -151,7 +170,12 @@ export default function Screen() {
                                 Volver
                             </Text>
                         </Button>
-                        <Button className='grow' >
+                        <Button
+                            onPress={() => {
+                                dispatch(addItem({ nombre: 'Ventana triple (3 hojas)', precio: total + total_mano_obra }));
+                                toast.success('Agregado a hoja');
+                            }}
+                            className='grow' >
                             <Text>
                                 Agregar a hoja
                             </Text>
@@ -160,13 +184,15 @@ export default function Screen() {
                 </ScrollView>
             </View>
             <FacturaModal open={open} setOpen={setOpen} data={{
-                ventanas: [{
+                items: [{
                     alto: +data.alto,
                     ancho: +data.ancho,
                     nombre: 'Ventana triple (3 hojas)',
-                    precio: total + total_mano_obra
+                    precio: total + total_mano_obra,
+
                 }],
-                empresa: data.empresa.toString()
+                empresa: data.empresa.toString(),
+                porcentajeGanancia: +data.porcentajeGanancia
             }} />
         </>
 

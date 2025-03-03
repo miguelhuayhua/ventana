@@ -13,6 +13,8 @@ import { BlurView } from 'expo-blur';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import { router } from 'expo-router';
+import { Columns3, Cuboid, LayoutTemplate, Tally2, Tally3 } from 'lucide-react-native';
+import colors from 'tailwindcss/colors';
 dayjs.locale('es');
 export default function Screen() {
 
@@ -34,10 +36,10 @@ export default function Screen() {
         </BlurView>
         <View className='flex flex-row gap-5 flex-wrap '>
 
-          <Card className='grow max-w-sm py-2 rounded-2xl'>
+          <Card className='grow max-w-sm pt-2 rounded-2xl'>
 
             <CardContent className='flex items-center'>
-              <Image style={{ width: 40, height: 40 }} source={require('../../assets/svg/mdi--two.svg')} />
+              <Tally2 style={{ marginLeft: 14 }} size={35} color={colors.gray["800"]} />
               <Text className='font-bold text-lg mb-2 text-center'>
                 Ventana simple
               </Text>
@@ -49,10 +51,10 @@ export default function Screen() {
             </CardContent>
 
           </Card>
-          <Card className='grow max-w-sm py-2 rounded-2xl'>
+          <Card className='grow max-w-sm pt-2 rounded-2xl'>
 
             <CardContent className='flex items-center'>
-              <Image style={{ width: 40, height: 40 }} source={require('../../assets/svg/mdi--three.svg')} />
+              <Tally3 style={{ marginLeft: 8 }} size={35} color={colors.gray["800"]} />
               <Text className='font-bold text-lg mb-2 text-center'>
                 Ventana triple
               </Text>
@@ -66,12 +68,39 @@ export default function Screen() {
             </CardContent>
 
           </Card>
-          <Card className='grow max-w-sm py-2 rounded-2xl'>
+          <Card className='grow max-w-sm pt-2 rounded-2xl'>
 
             <CardContent className='flex items-center'>
-              <Image style={{ width: 40, height: 40 }} source={require('../../assets/svg/banderola.svg')} />
+              <Columns3 size={30} color={colors.gray["800"]} />
+
               <Text className='font-bold text-lg mb-2 text-center'>
                 Banderola
+              </Text>
+              <Button variant='outline'>
+                <Text>Seleccionar</Text>
+              </Button>
+            </CardContent>
+
+          </Card>
+          <Card className='grow max-w-sm pt-2 rounded-2xl'>
+
+            <CardContent className='flex items-center'>
+              <LayoutTemplate size={30} color={colors.gray["800"]} />
+              <Text className='font-bold text-lg mb-2 text-center'>
+                Vidrios
+              </Text>
+              <Button variant='outline'>
+                <Text>Seleccionar</Text>
+              </Button>
+            </CardContent>
+
+          </Card>
+          <Card className='grow  pt-2 rounded-2xl'>
+
+            <CardContent className='flex items-center'>
+              <Cuboid size={30} color={colors.gray["800"]} />
+              <Text className='font-bold text-lg mb-2 text-center'>
+                Aluminios
               </Text>
               <Button variant='outline'>
                 <Text>Seleccionar</Text>

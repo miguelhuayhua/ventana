@@ -1,7 +1,8 @@
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
 import * as React from 'react';
 import colors from 'tailwindcss/colors';
-import { Cylinder, Factory, Home } from 'lucide-react-native';
+import { Book, Cylinder, Factory, Home, Store } from 'lucide-react-native';
+import { Button } from '~/components/ui/button';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -15,7 +16,10 @@ export default function RootLayout() {
     <Tabs screenOptions={{
       tabBarLabelStyle: { fontWeight: 700 },
       tabBarActiveTintColor: colors.cyan["600"],
-      tabBarInactiveTintColor: colors.gray["400"]
+      tabBarInactiveTintColor: colors.gray["400"],
+      headerRight: () => <Button
+      onPress={()=>router.push({pathname:'/book'})}
+      className='mr-2' variant='ghost'><Book color={colors.gray["600"]} /></Button>
     }}>
       <Tabs.Screen
         name='index'

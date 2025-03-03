@@ -63,6 +63,14 @@ export default function Screen() {
                     </Text>
                     <ArrowRightCircle color={colors.gray["600"]} />
                 </Button>
+                <Button
+                    onPress={() => router.push('/(material)/(aluminio)/union')}
+                    className='grow flex flex-row justify-between' variant='outline'>
+                    <Text className='!text-xl font-bold'>
+                        Unión de hoja
+                    </Text>
+                    <ArrowRightCircle color={colors.gray["600"]} />
+                </Button>
             </View>
         </ScrollView>
     );

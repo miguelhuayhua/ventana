@@ -16,9 +16,12 @@ import { and, eq } from 'drizzle-orm';
 dayjs.locale('es');
 //CONSTANTES 
 const HOJAS = 3;
+const GROSOR_ZOCALO_20 = 5;
+const GROSOR_ZOCALO_25 = 7;
 //PRECIOS
 let JAMBA = 0;
 let SOCALO = 0;
+let UNION = 0;
 let PARANTE = 0;
 let GANCHO = 0;
 let RIEL_SUP = 0;
@@ -51,7 +54,7 @@ export default function Screen() {
                 colorVidrio: "bronce",
                 colorAluminio: "bronce",
                 nroCorredizas: 1,
-                porcentajeGanancia: 0.8
+                porcentajeGanancia: 0.7
             }
         });
     const [Empresas, setEmpresas] = React.useState<Empresa[]>([]);
@@ -83,15 +86,15 @@ export default function Screen() {
                             <SelectLabel>Seleccione el tipo de trabajo</SelectLabel>
                             <SelectItem
                                 label={"Fabricación"}
-                                value={"0.4"}
+                                value={"0.3"}
                             />
                             <SelectItem
                                 label={"Fabricación e instalación"}
-                                value={"0.8"}
+                                value={"0.7"}
                             />
                             <SelectItem
                                 label={"Proyecto personalizado"}
-                                value={"1.5"}
+                                value={"1.3"}
                             />
                         </SelectContent>
                     </Select>
@@ -130,7 +133,7 @@ export default function Screen() {
                 render={({ field }) => {
                     return (
                         <>
-                            <Text className='text-xl font-bold mb-2'>{`Ancho de ventana (cm):`}</Text>
+                            <Text className='text-xl font-bold my-2'>{`Ancho de ventana (cm):`}</Text>
                             <Input
                                 placeholder='Write some stuff...'
                                 value={field.value.toString()}
@@ -256,10 +259,10 @@ export default function Screen() {
                 control={control}
                 name='tipoVidrio'
                 render={({ field, fieldState }) => (
-                    <Select className='mt-4' onValueChange={(id) => {
-                        let empresa = Empresas.find(value => value.id == id?.value);
-                        setValue('Empresa', empresa);
-                    }} >
+                    <Select className='mt-4'
+                        onValueChange={(value) => {
+                            field.onChange(value?.value)
+                        }} >
                         <Text className='text-xl font-bold mb-2'>
                             Tipo vidrio
                         </Text>
@@ -311,7 +314,7 @@ export default function Screen() {
                     </Select>
                 )} />
             <Button
-                className='mt-6'
+                className='mt-6 mb-4'
                 onPress={handleSubmit(data => {
                     if (data.Empresa) {
                         db.select().from(aluminios)
@@ -325,6 +328,7 @@ export default function Screen() {
                                         SOCALO = aluminio.find(value => value.tipo == 'socalo')?.precio!;
                                         RIEL_SUP = aluminio.find(value => value.tipo == 'superior')?.precio!;
                                         RIEL_INF = aluminio.find(value => value.tipo == 'inferior')?.precio!;
+                                        UNION = aluminio.find(value => value.tipo == 'union')?.precio!;
                                         des_gancho = data.alto - 2.4;
                                         des_jamba = data.alto - 0;
                                         des_parante = data.alto - 2.4;
@@ -341,10 +345,11 @@ export default function Screen() {
                                         let precio_parante = (PARANTE * ((des_parante * (6 - data.nroCorredizas * 2)) / 600)).toFixed(0);
                                         let longitud_goma = (((((des_parante - 2 * 5 + 1.2) * 2) + ((des_socalo + 1.2) * 2)) * HOJAS) / 100).toFixed(0);
                                         let nro_rodamientos = data.nroCorredizas * 2;
+                                        let precio_union = (UNION * des_parante / 600).toFixed(0);
                                         let nro_picos = data.nroCorredizas;
                                         let longitud_felpa = (((des_socalo * 6) * 2 + data.nroCorredizas * des_gancho + 2 * des_jamba) / 100).toFixed(0);
-                                        let area_vidrio = +(((des_socalo + 1.2) * (des_parante - 10 + 1.2)) * HOJAS).toFixed(2);
-                                        let precio_vidrio = +(area_vidrio / 90000 * vidrio[0].precio).toFixed(2);
+                                        let area_vidrio = +(((des_socalo + 1.2) * (des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 1.2)) * HOJAS).toFixed(2);
+                                        let precio_vidrio = +(area_vidrio / 90000 * vidrio[0].precio).toFixed(1);
                                         router.push({
                                             pathname: '/(cotizar)/res_triple', params: {
                                                 GANCHO,
@@ -376,7 +381,8 @@ export default function Screen() {
                                                 longitud_felpa,
                                                 empresa: data.Empresa?.nombre,
                                                 nroCorredizas: data.nroCorredizas,
-                                                porcentajeGanancia: data.porcentajeGanancia
+                                                porcentajeGanancia: data.porcentajeGanancia,
+                                                precio_union
                                             }
                                         })
                                     });

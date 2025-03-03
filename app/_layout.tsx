@@ -9,6 +9,9 @@ import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
 import { NAV_THEME } from '~/lib/constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Toaster } from 'sonner-native';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor, store } from '~/store/store';
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
   colors: NAV_THEME.light,
@@ -36,20 +39,25 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
-      <ThemeProvider value={LIGHT_THEME}>
-        <StatusBar style="dark" /> 
-        <Stack>
-          <Stack.Screen name="(main)" options={{ headerShown: false }} />
-          <Stack.Screen name="(cotizar)" options={{ headerShown: false }} />
-          <Stack.Screen name="(crear)" options={{ headerShown: false }} />
-          <Stack.Screen name="(editar)" options={{ headerShown: false }} />
-          <Stack.Screen name="index" />
-        </Stack>
-        <PortalHost />
-        <Toaster />
-      </ThemeProvider>
-    </GestureHandlerRootView>
+    <Provider store={store}>
+      <PersistGate persistor={persistor} loading={null}>
+        <GestureHandlerRootView>
+          <ThemeProvider value={LIGHT_THEME}>
+            <StatusBar style="dark" />
+            <Stack>
+              <Stack.Screen name="(main)" options={{ headerShown: false }} />
+              <Stack.Screen name="(cotizar)" options={{ headerShown: false }} />
+              <Stack.Screen name="(crear)" options={{ headerShown: false }} />
+              <Stack.Screen name="(editar)" options={{ headerShown: false }} />
+              <Stack.Screen name="book" options={{ title: 'Libro guardado' }} />
+              <Stack.Screen name="index" />
+            </Stack>
+            <PortalHost />
+            <Toaster />
+          </ThemeProvider>
+        </GestureHandlerRootView>
+      </PersistGate>
+    </Provider>
   );
 }
 

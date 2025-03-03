@@ -18,8 +18,9 @@ interface Props {
     open: boolean;
     setOpen: any;
     data: {
-        ventanas: { alto: number, ancho: number, nombre: string, precio: number }[],
-        empresa: string
+        items: { alto: number, ancho: number, nombre: string, precio: number }[],
+        empresa?: string,
+        porcentajeGanancia: number
     };
 }
 
@@ -71,7 +72,7 @@ export default function FacturaModal({ open, setOpen, data }: Props) {
                         </View>
 
                         <ScrollView style={styles.tableBody}>
-                            {data.ventanas.map((item, index) => (
+                            {data.items.map((item, index) => (
                                 <View key={index} style={styles.tableRow}>
                                     <Text style={[styles.tableCell, { flex: 2 }]} numberOfLines={2} ellipsizeMode="tail">
                                         {item.nombre}
@@ -91,7 +92,7 @@ export default function FacturaModal({ open, setOpen, data }: Props) {
 
                     <View style={styles.divider} />
                     <View style={styles.grandTotal}>
-                        <Text className='text-center font-bold text-2xl'>Total: {formatCurrency(+data.ventanas.reduce((acc, item) => acc + item.precio, 0).toFixed(0))} Bs.
+                        <Text className='text-center font-bold text-2xl'>Total: {formatCurrency(+data.items.reduce((acc, item) => acc + item.precio, 0).toFixed(0))} Bs.
                         </Text>
                     </View>
                     <View style={styles.divider} />
@@ -100,7 +101,10 @@ export default function FacturaModal({ open, setOpen, data }: Props) {
                             {`Material aluminio: ${data.empresa}`}
                         </Text>
                         <Text className='text-xs'>
-                            {`(Incluye la instalación y fabricación)`}
+                            {`${data.porcentajeGanancia == 0.4 ?
+                                '(Solo fabricación)' :
+                                data.porcentajeGanancia == 0.8 ?
+                                    '(Fabricado y colocado)' : '(Instalación personalizada)'}`}
                         </Text>
                     </View>
                 </ScrollView>
