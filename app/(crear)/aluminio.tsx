@@ -86,7 +86,7 @@ export default function Screen() {
                                     placeholder='Introduzca el valor del Aluminio'
                                     value={field.value.toString()}
                                     inputMode='numeric'
-                                    onChangeText={value => { field.onChange(+value) }}
+                                    onChangeText={value => { field.onChange(value) }}
                                 />
                             </>
                         )

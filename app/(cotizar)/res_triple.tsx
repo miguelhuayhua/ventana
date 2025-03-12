@@ -125,7 +125,7 @@ export default function Screen() {
                             Vidrio
                         </Text>
                         <Text className='text-lg'>
-                            3 piezas de {(+data.des_socalo + 1.2).toFixed(1)} x {((+data.des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 1.2)).toFixed(1)} cm
+                            3 piezas de {(+data.des_socalo + 2.4).toFixed(1)} x {((+data.des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 2.4)).toFixed(1)} cm
                         </Text>
                         <Text className='text-lg'>
                             Área a cubrir: {data.area_vidrio} cm2 = {data.precio_vidrio} Bs.
@@ -146,7 +146,7 @@ export default function Screen() {
                             Cinta felpa: {`${data.longitud_felpa} m = ${+data.longitud_felpa * 1} Bs.`}
                         </Text>
                         <Text className='text-lg'>
-                            Tornillos:100 unidades = 10 Bs.
+                            Tornillos: 100 unidades = 10 Bs.
                         </Text>
                         <Text className='text-lg'>
                             Silicona: 1 unidad = 22 Bs

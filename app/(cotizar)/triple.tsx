@@ -16,8 +16,8 @@ import { and, eq } from 'drizzle-orm';
 dayjs.locale('es');
 //CONSTANTES 
 const HOJAS = 3;
-const GROSOR_ZOCALO_20 = 5;
-const GROSOR_ZOCALO_25 = 7;
+const GROSOR_ZOCALO_20 = 4.8;
+const GROSOR_ZOCALO_25 = 6.5;
 //PRECIOS
 let JAMBA = 0;
 let SOCALO = 0;
@@ -135,9 +135,9 @@ export default function Screen() {
                         <>
                             <Text className='text-xl font-bold my-2'>{`Ancho de ventana (cm):`}</Text>
                             <Input
-                                placeholder='Write some stuff...'
+                                placeholder='Introduzca el ancho de la ventana'
                                 value={field.value.toString()}
-                                onChangeText={value => { field.onChange(+value) }}
+                                onChangeText={value => { field.onChange(value) }}
                                 inputMode='numeric'
                                 aria-labelledby='inputLabel'
                                 aria-errormessage='inputError'
@@ -157,12 +157,10 @@ export default function Screen() {
                                 {`Alto de ventana (cm):`}
                             </Text>
                             <Input
-                                placeholder='Write some stuff...'
+                                placeholder='Introduzca el alto de la ventana'
                                 value={field.value.toString()}
-                                onChangeText={value => { field.onChange(+value) }}
+                                onChangeText={value => { field.onChange(value) }}
                                 inputMode='numeric'
-                                aria-labelledby='inputLabel'
-                                aria-errormessage='inputError'
                             />
                         </>
                     )
@@ -229,10 +227,7 @@ export default function Screen() {
                 control={control}
                 name='linea'
                 render={({ field, fieldState }) => (
-                    <Select className='mt-4' onValueChange={(id) => {
-                        let empresa = Empresas.find(value => value.id == id?.value);
-                        setValue('Empresa', empresa);
-                    }} >
+                    <Select className='mt-4' onValueChange={value => field.onChange(value?.value)} >
                         <Text className='text-xl font-bold mb-2'>
                             Seleccione la línea
                         </Text>
@@ -329,12 +324,12 @@ export default function Screen() {
                                         RIEL_SUP = aluminio.find(value => value.tipo == 'superior')?.precio!;
                                         RIEL_INF = aluminio.find(value => value.tipo == 'inferior')?.precio!;
                                         UNION = aluminio.find(value => value.tipo == 'union')?.precio!;
-                                        des_gancho = data.alto - 2.4;
+                                        des_gancho = data.alto - (data.linea == "20" ? 2.4 : 3);
                                         des_jamba = data.alto - 0;
-                                        des_parante = data.alto - 2.4;
-                                        des_socalo = +((data.ancho - 1.2 - 20.5) / HOJAS).toFixed(2);
-                                        des_riel_sup = data.ancho - 1.2;
-                                        des_riel_inf = data.ancho - 1.2;
+                                        des_parante = data.alto - (data.linea == "20" ? 2.4 : 3);
+                                        des_socalo = +((data.ancho - 1.2 - (data.linea == "20" ? (data.nroCorredizas == 2 ? 20.5 : 13.8) : (data.nroCorredizas == 2 ? 17.2 : 24.2))) / HOJAS).toFixed(2);
+                                        des_riel_sup = +(data.ancho - 1.2).toFixed(2);
+                                        des_riel_inf = +(data.ancho - 1.2).toFixed(2);
                                         //precios
                                         let precio_gancho = (GANCHO * ((des_gancho * data.nroCorredizas * 2) / 600)).toFixed(0);
                                         let precio_socalo = (SOCALO * ((des_socalo * (6 - data.nroCorredizas)) / 600)).toFixed(0);
@@ -348,7 +343,7 @@ export default function Screen() {
                                         let precio_union = (UNION * des_parante / 600).toFixed(0);
                                         let nro_picos = data.nroCorredizas;
                                         let longitud_felpa = (((des_socalo * 6) * 2 + data.nroCorredizas * des_gancho + 2 * des_jamba) / 100).toFixed(0);
-                                        let area_vidrio = +(((des_socalo + 1.2) * (des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 1.2)) * HOJAS).toFixed(2);
+                                        let area_vidrio = +(((des_socalo + 2.4) * (des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 2.4)) * HOJAS).toFixed(2);
                                         let precio_vidrio = +(area_vidrio / 90000 * vidrio[0].precio).toFixed(1);
                                         router.push({
                                             pathname: '/(cotizar)/res_triple', params: {

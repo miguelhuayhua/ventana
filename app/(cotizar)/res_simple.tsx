@@ -64,8 +64,6 @@ export default function Screen() {
         + (+data.precio_vidrio)).toFixed(0);
     let total_mano_obra = +(total * +data.porcentajeGanancia).toFixed(0);
     const [open, setOpen] = React.useState(false);
-    console.log(items)
-    console.log(items.find((value: any) => value.item.precio == (+total + total_mano_obra)))
     return (
         <>
             <View  >
@@ -104,7 +102,7 @@ export default function Screen() {
                             {`Ganchos: ${data.des_gancho} cm x 2 = ${data.precio_gancho} Bs.`}
                         </Text>
                         <Text className='text-lg'>
-                            {`Sócalos: ${data.des_socalo} cm x ${4 - +data.nroCorredizas} & ${+data.des_socalo} cm x ${4 - +data.nroCorredizas} = ${+data.precio_socalo + (+data.precio_socalo_c)} Bs.`}
+                            {`Sócalos: ${data.des_socalo} cm x ${4 - +data.nroCorredizas} & ${+data.des_socalo} cm x ${data.nroCorredizas} = ${+data.precio_socalo + (+data.precio_socalo_c)} Bs.`}
                         </Text>
                         <Text className='text-lg'>
                             {`Jamba: ${data.des_jamba} cm x 2 = ${data.precio_jamba} Bs.`}
@@ -119,12 +117,11 @@ export default function Screen() {
                             Vidrio
                         </Text>
                         <Text className='text-lg'>
-                            2 piezas de {(+data.des_socalo + 1.2).toFixed(1)} x {((+data.des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 1.2)).toFixed(1)} cm
+                            2 piezas de {(+data.des_socalo + 2.4).toFixed(1)} x {((+data.des_parante - 2 * (data.linea == '20' ? GROSOR_ZOCALO_20 : GROSOR_ZOCALO_25) + 2.4)).toFixed(1)} cm
                         </Text>
                         <Text className='text-lg'>
                             Área a cubrir: {data.area_vidrio} cm2 = {data.precio_vidrio} Bs.
                         </Text>
-
                         <Text className='text-xl font-bold'>
                             Materiales extras
                         </Text>

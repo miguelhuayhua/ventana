@@ -11,8 +11,10 @@ const item = (state = { items: [] }, action: ItemAction) => {
     switch (action.type) {
         case 'ADD_ITEM':
             return { ...state, items: [...state.items, { ...item }] };
-        case 'REMOVE_ITEM':
-            return { ...state, items: state.items.filter((item: any) => item.id !== action.id) };
+        case 'REMOVE_ITEM': {
+            return { ...state, items: state.items.filter(((value: any) => value.id != item.id)) };
+        }
+
         case 'GET_ITEMS':
             return state.items;
         default:

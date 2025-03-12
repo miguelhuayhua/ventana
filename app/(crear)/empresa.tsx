@@ -49,7 +49,7 @@ export default function Screen() {
                             },
                             loading: 'Agregando empresa...',
                             success: res => {
-                                router.replace('/(main)/empresas')
+                                router.dismiss();
                                 return 'Creado con éxito';
                             }
                         })

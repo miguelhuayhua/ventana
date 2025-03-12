@@ -63,7 +63,7 @@ export default function Screen() {
                                     </Text>
                                     <Button
                                         onPress={() => {
-                                            dispatch(remove_item(item.item.id));
+                                            dispatch(remove_item(item.item));
                                             toast.success('Item eliminado');
                                         }}
                                         size='icon' variant='destructive'>

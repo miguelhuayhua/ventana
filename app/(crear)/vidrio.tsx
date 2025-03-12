@@ -87,7 +87,7 @@ export default function Screen() {
                                     placeholder='Introduzca el valor del vidrio'
                                     value={field.value.toString()}
                                     inputMode='numeric'
-                                    onChangeText={value => { field.onChange(+value) }}
+                                    onChangeText={value => { field.onChange(value) }}
                                 />
                             </>
                         )

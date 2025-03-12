@@ -5,4 +5,4 @@ export const GET_ITEMS = 'GET_ITEMS';
 export const addItem =
     (item: { nombre: string, precio: number, id: string }) => ({ type: ADD_ITEM, item });
 
-export const remove_item = (id: string) => ({ type: REMOVE_ITEM, id });
+export const remove_item = (item: any) => ({ type: REMOVE_ITEM, item });
