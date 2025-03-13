@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger } from '~
 import { Button } from '~/components/ui/button';
 import { toast } from 'sonner-native';
 import { and, eq } from 'drizzle-orm';
+import { roundToNearest } from '~/lib/utils';
 dayjs.locale('es');
 //CONSTANTES 
 const HOJAS = 3;
@@ -54,7 +55,7 @@ export default function Screen() {
                 colorVidrio: "bronce",
                 colorAluminio: "bronce",
                 nroCorredizas: 1,
-                porcentajeGanancia: 0.7
+                porcentajeGanancia: 0.5
             }
         });
     const [Empresas, setEmpresas] = React.useState<Empresa[]>([]);
@@ -90,11 +91,11 @@ export default function Screen() {
                             />
                             <SelectItem
                                 label={"Fabricación e instalación"}
-                                value={"0.7"}
+                                value={"0.5"}
                             />
                             <SelectItem
                                 label={"Proyecto personalizado"}
-                                value={"1.3"}
+                                value={"1.1"}
                             />
                         </SelectContent>
                     </Select>
@@ -324,12 +325,12 @@ export default function Screen() {
                                         RIEL_SUP = aluminio.find(value => value.tipo == 'superior')?.precio!;
                                         RIEL_INF = aluminio.find(value => value.tipo == 'inferior')?.precio!;
                                         UNION = aluminio.find(value => value.tipo == 'union')?.precio!;
-                                        des_gancho = data.alto - (data.linea == "20" ? 2.4 : 3);
+                                        des_gancho = roundToNearest(data.alto - (data.linea == "20" ? 2.4 : 3), 0.05);
                                         des_jamba = data.alto - 0;
-                                        des_parante = data.alto - (data.linea == "20" ? 2.4 : 3);
-                                        des_socalo = +((data.ancho - 1.2 - (data.linea == "20" ? (data.nroCorredizas == 2 ? 20.5 : 13.8) : (data.nroCorredizas == 2 ? 17.2 : 24.2))) / HOJAS).toFixed(2);
-                                        des_riel_sup = +(data.ancho - 1.2).toFixed(2);
-                                        des_riel_inf = +(data.ancho - 1.2).toFixed(2);
+                                        des_parante = roundToNearest(data.alto - (data.linea == "20" ? 2.4 : 3), 0.05);
+                                        des_socalo = roundToNearest(+((data.ancho - (data.linea == "20" ? 1.2 : 2) - (data.linea == "20" ? (data.nroCorredizas == 2 ? 20.5 : 13.8) : (data.nroCorredizas == 2 ? 17.2 : 24.2))) / HOJAS).toFixed(2), 0.05);
+                                        des_riel_sup = roundToNearest(+(data.ancho - (data.linea == "20" ? 1.2 : 2)).toFixed(2), 0.05);
+                                        des_riel_inf = roundToNearest(+(data.ancho - (data.linea == "20" ? 1.2 : 2)).toFixed(2), 0.05);
                                         //precios
                                         let precio_gancho = (GANCHO * ((des_gancho * data.nroCorredizas * 2) / 600)).toFixed(0);
                                         let precio_socalo = (SOCALO * ((des_socalo * (6 - data.nroCorredizas)) / 600)).toFixed(0);

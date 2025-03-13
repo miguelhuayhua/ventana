@@ -11,4 +11,7 @@ const formatCurrency = (value: number) => {
     maximumFractionDigits: 2,
   }).format(value);
 };
-export { formatCurrency };
+
+const roundToNearest = (num: number, step: number) => Math.floor(num / step) * step;
+
+export { formatCurrency , roundToNearest };

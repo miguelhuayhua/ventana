@@ -57,12 +57,12 @@ export default function Screen() {
         + (+data.precio_riel_sup)
         + (+data.precio_socalo)
         + (+data.precio_socalo_c)
-        + (22 + 10)
+        + (22 + 10 + 6)
         + (+data.nro_rodamientos * 2.5)
         + (+data.longitud_goma) * 1.5
         + (+data.longitud_felpa) * 1
         + (+data.precio_vidrio)).toFixed(0);
-    let total_mano_obra = +(total * +data.porcentajeGanancia).toFixed(0);
+    let total_mano_obra = +(total * +data.porcentajeGanancia * (data.linea == "20" ? 1 : 0.6)).toFixed(0);
     const [open, setOpen] = React.useState(false);
     return (
         <>
@@ -102,7 +102,7 @@ export default function Screen() {
                             {`Ganchos: ${data.des_gancho} cm x 2 = ${data.precio_gancho} Bs.`}
                         </Text>
                         <Text className='text-lg'>
-                            {`Sócalos: ${data.des_socalo} cm x ${4 - +data.nroCorredizas} & ${+data.des_socalo} cm x ${data.nroCorredizas} = ${+data.precio_socalo + (+data.precio_socalo_c)} Bs.`}
+                            {`Sócalos: ${data.des_socalo} cm x ${4 - +data.nroCorredizas} & ${+data.des_socalo + 2} cm x ${data.nroCorredizas} = ${(+data.precio_socalo + (+data.precio_socalo_c)).toFixed(2)} Bs.`}
                         </Text>
                         <Text className='text-lg'>
                             {`Jamba: ${data.des_jamba} cm x 2 = ${data.precio_jamba} Bs.`}
@@ -132,7 +132,7 @@ export default function Screen() {
                             Nro. de rodamientos: {data.nro_rodamientos} unidades = {+data.nro_rodamientos * 2.5} Bs.
                         </Text>
                         <Text className='text-lg'>
-                            Picos de loro: 1 unidades = 2.5 Bs.
+                            Picos de loro: 1 unidades = 6 Bs.
                         </Text>
                         <Text className='text-lg'>
                             Cinta felpa: {`${data.longitud_felpa} m = ${+data.longitud_felpa * 1} Bs.`}

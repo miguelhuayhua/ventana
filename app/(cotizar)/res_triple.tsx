@@ -59,10 +59,10 @@ export default function Screen() {
         + (+data.precio_vidrio)
         + (+data.longitud_goma * 1.5)
         + (+data.nro_rodamientos * 2.5)
-        + (10 + 22)
+        + (10 + 22 + 6 * +data.nroCorredizas)
         + (data.nroCorredizas == '1' ? +data.precio_union : 0)
         + (+data.longitud_felpa)).toFixed(0);
-    let total_mano_obra = +(total * +data.porcentajeGanancia).toFixed(0);
+    let total_mano_obra = +(total * +data.porcentajeGanancia * (data.linea == "20" ? 1 : 0.6)).toFixed(0);
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -108,19 +108,19 @@ export default function Screen() {
                         <Text className='text-lg'>
                             {`Jamba: ${data.des_jamba} cm x 2 = ${data.precio_jamba} Bs.`}
                         </Text>
+                        {
+                            +data.nroCorredizas == 1 ?
+                                <Text className='text-lg'>
+                                    Unión de hoja: {data.des_parante} cm x 1 = {data.precio_union} Bs.
+                                </Text>
+                                : null
+                        }
                         <Text className='text-lg'>
                             {`Riel superior: ${data.des_riel_sup} cm x 1 = ${data.precio_riel_sup} Bs.`}
                         </Text>
                         <Text className='text-lg'>
                             {`Riel inferior: ${data.des_riel_inf} cm x 1 = ${data.precio_riel_inf} Bs.`}
                         </Text>
-                        {
-                            data.nroCorredizas == '1' ?
-                                <Text className='text-lg'>
-                                    {`Unión de hoja: ${data.des_parante} cm x 1 = ${data.precio_union} Bs.`}
-                                </Text>
-                                : null
-                        }
                         <Text className='text-xl font-bold'>
                             Vidrio
                         </Text>
@@ -140,7 +140,7 @@ export default function Screen() {
                             Nro. de rodamientos: {data.nro_rodamientos} unidades = {+data.nro_rodamientos * 2.5} Bs.
                         </Text>
                         <Text className='text-lg'>
-                            Picos de loro: {data.nroCorredizas} unidades
+                            Picos de loro: {data.nroCorredizas} unidades = {+data.nroCorredizas * 6} Bs.
                         </Text>
                         <Text className='text-lg'>
                             Cinta felpa: {`${data.longitud_felpa} m = ${+data.longitud_felpa * 1} Bs.`}

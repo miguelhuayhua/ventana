@@ -103,9 +103,9 @@ export default function FacturaModal({ open, setOpen, data }: Props) {
                         {
                             data.porcentajeGanancia && (
                                 <Text className='text-xs'>
-                                    {`${data.porcentajeGanancia == 0.4 ?
+                                    {`${data.porcentajeGanancia == 0.3 ?
                                         '(Solo fabricación)' :
-                                        data.porcentajeGanancia == 0.8 ?
+                                        data.porcentajeGanancia == 0.5 ?
                                             '(Fabricado y colocado)' : '(Instalación personalizada)'}`}
                                 </Text>
                             )
